@@ -1,0 +1,7 @@
+{
+  "name": "AsyncTaskGroup",
+  "version": "1.0.0",
+  "devDependencies": {
+    "testpass": "^0.1.1"
+  }
+}

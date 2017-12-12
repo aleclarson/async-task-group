@@ -1,7 +1,14 @@
 
-function AsyncTaskGroup(limit = Infinity) {
+function AsyncTaskGroup(limit = Infinity, transform) {
+  if (typeof limit == 'function') {
+    transform = limit
+    limit = Infinity
+  }
   if (limit <= 0) {
     throw TypeError('Expected a positive number')
+  }
+  if (typeof transform == 'function') {
+    this._transform = transform
   }
   this.maxConcurrent = limit
   this.numConcurrent = 0
@@ -18,7 +25,7 @@ module.exports = AsyncTaskGroup
 AsyncTaskGroup.prototype = {
   constructor: AsyncTaskGroup,
   push(task) {
-    if (typeof task != 'function') {
+    if (!this._transform && typeof task != 'function') {
       throw TypeError('Expected a function')
     }
     if (!this.error) {
@@ -47,19 +54,20 @@ AsyncTaskGroup.prototype = {
   async _run(task) {
     this.numConcurrent += 1
     try {
-      await task()
-      this.numConcurrent -= 1
-      if (!this.error) {
-        const task = this.queue.shift()
-        if (task) {
-          this._run(task)
-        } else if (this.numConcurrent == 0) {
-          this.resolve()
-        }
-      }
+      await (this._transform ? this._transform(task) : task())
     } catch(error) {
       this.error = error
-      this.reject(error)
+      return this.reject(error)
+    }
+    this.numConcurrent -= 1
+    this._next()
+  },
+  _next() {
+    const task = this.queue.shift()
+    if (task) {
+      this._run(task)
+    } else if (this.numConcurrent == 0) {
+      this.resolve()
     }
   },
 }

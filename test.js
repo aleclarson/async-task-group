@@ -1,4 +1,3 @@
-
 const {test} = require('testpass')
 
 const AsyncTaskGroup = require('.')
@@ -11,18 +10,18 @@ test('limit concurrency', (t) => {
     .push(() => p1.promise)
     .push(() => p2.promise)
 
-  t.eq(tasks.numConcurrent, 1)
+  t.eq(tasks.count, 1)
   t.eq(tasks.queue.length, 1)
 
   p1.resolve()
   setImmediate(() => {
-    t.eq(tasks.numConcurrent, 1)
+    t.eq(tasks.count, 1)
     t.eq(tasks.queue.length, 0)
     p2.resolve()
   })
 
   return tasks.then(() => {
-    t.eq(tasks.numConcurrent, 0)
+    t.eq(tasks.count, 0)
     t.eq(tasks.queue.length, 0)
   })
 })

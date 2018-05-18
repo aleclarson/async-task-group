@@ -1,11 +1,11 @@
 
 class AsyncTaskGroup {
-  constructor(limit, transform) {
+  constructor(limit, wrap) {
     if (typeof limit == 'function') {
-      this._transform = limit
+      this._wrap = limit
       limit = undefined
     } else if (typeof transform == 'function') {
-      this._transform = transform
+      this._wrap = transform
     }
     this.limit = limit
     this.count = 0
@@ -17,9 +17,6 @@ class AsyncTaskGroup {
     })
   }
   push(task) {
-    if (!this._transform && typeof task != 'function') {
-      throw TypeError('Expected a function')
-    }
     if (!this.error) {
       if (this.count !== this.limit) {
         this._run(task)
@@ -43,10 +40,13 @@ class AsyncTaskGroup {
   catch(onRejected) {
     return this.promise.catch(onRejected)
   }
+  _wrap(task) {
+    return task == 'function' ? task() : task
+  }
   async _run(task) {
     this.count += 1
     try {
-      await (this._transform ? this._transform(task) : task())
+      await this._wrap(task)
     } catch(error) {
       this.error = error
       return this.reject(error)

@@ -3,12 +3,13 @@
 
 > `npm install async-task-group`
 
-The `AsyncTaskGroup` class is like `Promise.all`, but more flexible. Tasks can be added any time before completion. This means promises within an `AsyncTaskGroup` can easily extend the lifetime of an `AsyncTaskGroup` by adding more tasks to it.
+The `AsyncTaskGroup` class is like `Promise.all`, but more flexible.
 
-Similar to `Promise.all`, remaining tasks are not executed if a preceding task throws an error.
+Tasks can be added any time before completion, which means tasks can easily extend the lifetime of an `AsyncTaskGroup` by adding more tasks.
 
-Tasks are not required to be functions if you provide a transform function when
-constructing an `AsyncTaskGroup` instance.
+The number of concurrent tasks can be limited or unlimited. When limited, any remaining tasks are not processed if a preceding task throws an error.
+
+"Tasks" can be any value type. "Task functions" are called automatically. "Task promises" are awaited. If you pass a "wrap function" to the constructor, all task values will be passed to it. Typically, your wrap function should return a promise, but any value type is acceptable. Any functions returned by your wrap function are *not* called automatically.
 
 ```js
 const AsyncTaskGroup = require('async-task-group')
@@ -35,6 +36,6 @@ const promise = tasks.then(() => {})
 // Attach an error handler.
 const promise = tasks.catch(e => {})
 
-// The following snippet calls `fetch` for every queued value.
+// Provide a "wrap function" that maps every task value.
 const tasks = new AsyncTaskGroup(2, fetch)
 ```

@@ -1,14 +1,10 @@
 
 class AsyncTaskGroup {
-  constructor(limit = 0, transform) {
+  constructor(limit, transform) {
     if (typeof limit == 'function') {
-      transform = limit
-      limit = 0
-    }
-    if (limit <= 0) {
-      throw TypeError('Expected a positive number')
-    }
-    if (typeof transform == 'function') {
+      this._transform = limit
+      limit = undefined
+    } else if (typeof transform == 'function') {
       this._transform = transform
     }
     this.limit = limit

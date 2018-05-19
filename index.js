@@ -41,7 +41,7 @@ class AsyncTaskGroup {
     return this.promise.catch(onRejected)
   }
   _wrap(task) {
-    return task == 'function' ? task() : task
+    return typeof task == 'function' ? task() : task
   }
   async _run(task) {
     this.count += 1

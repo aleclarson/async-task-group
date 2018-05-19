@@ -27,14 +27,32 @@ test('limit concurrency', (t) => {
 })
 
 test('the promise is rejected if a task throws', (t) => {
+  let task1 = t.spy()
+  let task2 = t.spy()
+
   const error = new Error()
-  const tasks = new AsyncTaskGroup()
+  const tasks = new AsyncTaskGroup(1)
     .push(() => {
+      task1()
       throw error
     })
+    .push(task2)
 
-  t.eq(tasks.error, error)
-  return tasks.catch(err => t.eq(err, error))
+  return tasks.then(() => {
+    if (task1.calls == 0) {
+      t.fail('tasks functions were not called')
+    } else if (task2.calls == 1) {
+      t.fail('task group continued despite error')
+    } else {
+      t.fail('exception did not reject the group promise')
+    }
+  }, (e) => {
+    if (e == error) {
+      t.eq(tasks.error, error)
+    } else {
+      t.fail(e.message)
+    }
+  })
 })
 
 function defer() {

@@ -2,6 +2,20 @@ const {test} = require('testpass')
 
 const AsyncTaskGroup = require('.')
 
+test('wrap function', (t) => {
+  const p1 = defer()
+  const p2 = defer().promise
+  const wrap = () => p1.promise
+  const tasks = new AsyncTaskGroup(3, wrap)
+    .push(p2).push(p2).push(p2)
+
+  t.eq(tasks.count, 3)
+  p1.resolve()
+  return tasks.then(() => {
+    t.eq(tasks.count, 0)
+  })
+})
+
 test('limit concurrency', (t) => {
   const p1 = defer()
   const p2 = defer()

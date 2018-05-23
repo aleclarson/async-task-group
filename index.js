@@ -4,8 +4,8 @@ class AsyncTaskGroup {
     if (typeof limit == 'function') {
       this._wrap = limit
       limit = undefined
-    } else if (typeof transform == 'function') {
-      this._wrap = transform
+    } else if (typeof wrap == 'function') {
+      this._wrap = wrap
     }
     this.limit = limit
     this.count = 0

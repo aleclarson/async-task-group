@@ -1,7 +1,5 @@
 
-# async-task-group v1.2.2 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
-
-> `npm install async-task-group`
+# async-task-group
 
 The `AsyncTaskGroup` class is like `Promise.all`, but more flexible.
 

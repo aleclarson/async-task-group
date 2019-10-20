@@ -1,18 +1,18 @@
-class AsyncTaskGroup implements PromiseLike<void> {
-  constructor(limit?: number, wrap?: (task: unknown) => any)
-  constructor(wrap?: (task: unknown) => any)
+declare class AsyncTaskGroup<T = unknown> {
+  constructor(limit?: number, wrap?: (task: T) => any)
+  constructor(wrap?: (task: T) => any)
 
-  push(task: unknown): this
-  concat(tasks: readonly unknown[]): this
-  map<T>(tasks: readonly T[], transform: (task: T) => any): this
+  push(task: T): this
+  concat(tasks: readonly T[]): this
+  map<U>(tasks: readonly U[], transform: (task: U) => any): this
 
-  then<T, U = never>(
-    onFulfilled?: (() => T | PromiseLike<T>) | undefined | null,
-    onRejected?: ((reason: any) => U | PromiseLike<U>) | undefined | null,
+  then<T = void, U = never>(
+    onFulfilled: () => T | PromiseLike<T>,
+    onRejected?: (reason: any) => U | PromiseLike<U>,
   ): Promise<T | U>
 
-  catch<T = never>(
-    onRejected?: ((reason: any) => T | PromiseLike<T>) | undefined | null,
+  catch<T = void>(
+    onRejected: (reason: any) => T | PromiseLike<T>,
   ): Promise<T>
 }
 export = AsyncTaskGroup

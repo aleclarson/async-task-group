@@ -1,6 +1,9 @@
 declare class AsyncTaskGroup<T = unknown> {
   constructor(limit?: number, wrap?: (task: T) => any)
   constructor(wrap?: (task: T) => any)
+  queue: T[]
+  /** Number of active tasks */
+  count: number
 
   push(task: T): this
   concat(tasks: readonly T[]): this

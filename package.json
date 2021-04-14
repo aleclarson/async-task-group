@@ -1,6 +1,6 @@
 {
   "name": "async-task-group",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "license": "MIT",
   "description": "Promise.all but more flexible",
   "repository": "https://github.com/aleclarson/async-task-group.git",
